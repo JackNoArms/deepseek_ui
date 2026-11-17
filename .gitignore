@@ -1,0 +1,48 @@
+# Python e dependências locais
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# Sessões, credenciais e configurações privadas
+.env
+.env.*
+!.env.example
+config.json
+.workspace.json
+.deepseek_ui/
+chrome_profile/
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Registros, dados, backups e saídas locais
+*.log
+*.sqlite
+*.sqlite3
+*.db
+logs/
+build/
+dist/
+diagnosticos_ui/
+mockups/
+_backup*/
+*.bak
+*.tmp
+*.swp
+
+# Vault local: documentação interna pode incluir caminhos e informações pessoais
+vault/
+
+# Preferências da máquina/IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

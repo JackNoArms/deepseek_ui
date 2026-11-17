@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#15181E">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- iOS: instalável como PWA (necessário para Web Push no iPhone). -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DeepSeek UI">
+<!--
+  apple-touch-icon SEM query string. O iOS Safari às vezes ignora o ícone
+  quando a URL tem `?v=` e o "Adicionar à Tela de Início" falha ou o PWA
+  abre fora do modo standalone. O tamanho 180x180 é o que o iOS usa para
+  a tela de início; antes só tinha 192 e 512.
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/icon-180.png">
+<link rel="manifest" href="/manifest.webmanifest?v=9">
+<link rel="icon" href="/icon-192.png?v=9">
+<link rel="stylesheet" href="/remote_theme.css?v=9">
+<link rel="stylesheet" href="/remote_panel.css?v=8">
+<title>DeepSeek UI · Remoto</title>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <header>
+    <span class="dot" id="dot"></span>
+    <h1>DeepSeek UI</h1>
+    <span class="badge" id="badgeProjeto">—</span>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="chat">Chat</button>
+    <button class="tab" data-tab="projeto">Projeto</button>
+    <button class="tab" data-tab="vault">Vault</button>
+    <button class="tab" data-tab="mais">Mais</button>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ============ Chat ============ -->
+  <section class="page active" id="page-chat">
+    <div class="statusbar" id="statusChat"></div>
+    <div class="chat-wrap">
+      <div class="chat" id="chatArea"></div>
+      <button type="button" id="btnFim" class="ir-fim" hidden>↓ Ir para o fim</button>
+    </div>
+    <div class="composer">
+      <div class="composer-row">
+        <label class="switch">
+          <input type="checkbox" id="modoAgente" checked>
+          <span>Agente</span>
+        </label>
+        <button type="button" class="ghost" id="btnNovoChat"
+                title="Iniciar uma nova conversa no DeepSeek">🆕 Nova</button>
+        <button type="button" class="ghost" id="btnColar"
+                title="Colar da área de transferência">📋 Colar</button>
+        <button type="button" class="ghost" id="btnAnexar"
+                title="Anexar arquivo ou imagem">📎 Anexar</button>
+        <input type="file" id="arquivoInput" multiple hidden
+               accept="image/*,.txt,.md,.json,.xml,.csv,.py,.js,.ts,.html,.css,.yaml,.yml,.toml,.log">
+      </div>
+      <div id="filaEnvio" class="fila" hidden>
+        <div class="fila-head">
+          <span>Fila · <b id="filaTotal">0</b></span>
+          <button type="button" class="link" id="btnLimparFila">Limpar</button>
+        </div>
+        <div id="filaItens" class="fila-itens"></div>
+      </div>
+      <div id="barraAnexos" class="anexos-bar" hidden></div>
+      <div class="composer-row">
+        <textarea id="entrada" rows="2" placeholder="Escreva para o DeepSeek…"></textarea>
+        <button id="btnEnviar" class="primary">Enviar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Projeto ============ -->
+  <section class="page" id="page-projeto">
+    <div class="section-head">
+      <h2>Projeto aberto</h2>
+      <button class="ghost" id="btnTrocarProjeto">Trocar</button>
+    </div>
+    <div class="path" id="caminhoProjeto">—</div>
+    <div class="tree" id="treeProjeto"></div>
+  </section>
+
+  <!-- ============ Vault ============ -->
+  <section class="page" id="page-vault">
+    <div class="section-head">
+      <h2>Vault vinculado</h2>
+      <button class="ghost" id="btnTrocarVault">Trocar</button>
+    </div>
+    <div class="path" id="caminhoVault">—</div>
+    <div class="tree" id="treeVault"></div>
+  </section>
+
+  <!-- ============ Mais ============ -->
+  <section class="page" id="page-mais">
+    <div class="section-head"><h2>Estado</h2></div>
+    <div class="meta" id="estado"></div>
+
+    <div class="section-head"><h2>Acesso e permissões</h2></div>
+    <div class="small">
+      <div class="path" id="permResumo">—</div>
+      <button type="button" class="primary" id="btnAbrirPermissoes"
+              style="margin-top:8px">Configurar permissões</button>
+    </div>
+
+    <div class="section-head"><h2>Tema</h2></div>
+    <div class="small">
+      <select id="temaLocal" aria-label="Tema deste aparelho">
+        <option value="">Igual ao PC</option>
+        <option value="grafite">Grafite Índigo</option>
+        <option value="oceano">Oceano Profundo</option>
+        <option value="papel">Claro Papel</option>
+        <option value="escuro">Escuro</option>
+        <option value="alto_contraste_escuro">Alto contraste escuro</option>
+        <option value="alto_contraste_claro">Alto contraste claro</option>
+      </select>
+    </div>
+
+    <div class="section-head"><h2>Notificações</h2></div>
+    <div id="notifBody" class="small"></div>
+  </section>
+
+</main>
+
+<!-- ============ Diálogos ============ -->
+
+<dialog id="dlgArquivo">
+  <form method="dialog" class="dialog-form">
+    <header class="dialog-head">
+      <h2 id="dlgArquivoTitulo">Arquivo</h2>
+      <button class="ghost" id="btnFecharArquivo" value="cancel">Fechar</button>
+    </header>
+    <div class="path" id="dlgArquivoCaminho"></div>
+    <textarea id="dlgArquivoTexto" spellcheck="false"></textarea>
+    <div class="dialog-actions">
+      <button type="button" class="danger" id="btnApagarArquivo">Apagar</button>
+      <span class="spacer"></span>
+      <button type="button" class="primary" id="btnSalvarArquivo">Salvar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgPasta">
+  <div class="dialog-form">
+    <header class="dialog-head">
+      <h2 id="dlgPastaTitulo">Escolher pasta</h2>
+      <button class="ghost" id="btnFecharPasta">Fechar</button>
+    </header>
+    <div class="path" id="dlgPastaAtual">—</div>
+    <div class="tree" id="dlgPastaLista"></div>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="btnPastaPai">↑ Pai</button>
+      <span class="spacer"></span>
+      <button type="button" class="primary" id="btnEscolherPasta">Escolher esta</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dlgNovo">
+  <div class="dialog-form">
+    <header class="dialog-head">
+      <h2>Novo item</h2>
+      <button class="ghost" id="btnFecharNovo">Fechar</button>
+    </header>
+    <p class="small">Dentro de: <span id="novoOnde">—</span></p>
+    <input type="text" id="novoNome" placeholder="nome">
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="btnCriarPasta">Criar pasta</button>
+      <button type="button" class="primary" id="btnCriarArquivo">Criar arquivo</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dlgPermissoes">
+  <div class="dialog-form">
+    <header class="dialog-head">
+      <h2>Permissões</h2>
+      <button class="ghost" id="btnFecharPermissoes">Fechar</button>
+    </header>
+    <p class="small" style="margin:0 0 4px 0">Escopo de acesso</p>
+    <select id="permMode"></select>
+    <label class="small" style="display:flex;align-items:center;gap:8px;margin-top:10px">
+      <input type="checkbox" id="permConfirmReads">
+      <span>Pedir confirmação antes de compartilhar leituras com o DeepSeek</span>
+    </label>
+    <p class="small" style="margin:14px 0 4px 0">Pastas autorizadas</p>
+    <div id="permGrants" class="grants"></div>
+    <div class="dialog-actions">
+      <button type="button" class="ghost" id="btnPermAddPasta">+ Adicionar pasta</button>
+      <span class="spacer"></span>
+      <button type="button" class="primary" id="btnSalvarPermissoes">Salvar</button>
+    </div>
+  </div>
+</dialog>
+
+<div id="toast" class="toast"></div>
+
+<script src="/remote_panel.js?v=8"></script>
+</body>
+</html>
