@@ -1,11 +1,28 @@
 # DeepSeek UI
 
-Um assistente de código estilo Claude Code, movido a **chat.deepseek.com** por
-automação de navegador. Sem API key: usa a sua sessão logada no site.
+**Um ambiente de desenvolvimento assistido por IA, feito em Python, com controle humano sobre alterações no código.**
 
-Ele lê os arquivos do seu projeto, propõe alterações, mostra o diff e grava no
-disco **depois que você confirma**. Em modo Agente, trabalha em várias rodadas
-até terminar a tarefa.
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white) ![Qt](https://img.shields.io/badge/Desktop-PyQt6-41CD52?logo=qt&logoColor=white) ![Selenium](https://img.shields.io/badge/Browser-Selenium-43B02A?logo=selenium&logoColor=white)
+
+> Projeto independente de integração com o **chat.deepseek.com** por automação de navegador. Não é um cliente oficial do serviço. Utiliza a sessão autenticada pelo usuário; não necessita de chave de API.
+
+## O problema e a solução
+
+Trocar de janela entre o chat de IA e o editor interrompe o contexto de programação. O DeepSeek UI reúne a conversa e o workspace em uma interface desktop: abre arquivos, acompanha o projeto, propõe diferenças (*diffs*) e permite revisar o que será gravado. O modo Agente pode trabalhar em várias rodadas com permissões configuráveis.
+
+**Jornada principal:** conectar a sessão → abrir projeto → explicar a tarefa → analisar propostas e resultados → aplicar mudanças autorizadas.
+
+### Destaques de engenharia
+
+- **Python + PyQt6:** interface desktop, gerenciamento de arquivos, histórico e terminal integrado.
+- **Automação com Selenium:** integração via navegador autenticado, sem chave de API.
+- **Segurança por escopo:** perfis de acesso, validação de caminhos e backup nas edições de arquivos; ações de comando dependem do perfil configurado.
+- **Painel mobile:** PWA local acessível por Tailscale Serve, com decisões, fila e acompanhamento de tarefas.
+- **Qualidade:** testes automatizados para núcleo, permissões, integrações e componentes de interface.
+
+**Segurança:** perfis amplos/automáticos e execução de comandos podem modificar arquivos e executar programas. Utilize o perfil mais restritivo compatível com sua necessidade; nunca publique `chrome_profile/`, `.deepseek_ui/`, `config.json` ou segredos.
+
+**Situação:** código-fonte local versionado em 17/11/2026. Na validação de referência, `testes/rodar_tudo.py` teve 764 casos corretos e `pytest testes/ -q` teve 271 testes aprovados. Isso não substitui testes manuais com conta, navegador e instalador reais.
 
 ## Instalar
 
@@ -39,8 +56,10 @@ dados (padrão: manter).
 
 ### Gerar o instalador
 
+> **Limitação verificada na preparação do repositório (17/11/2026):** esta cópia de código-fonte não contém `build.bat` nem `requirements-build.txt`, mencionados originalmente na documentação. O processo de empacotamento abaixo descreve o fluxo previsto, mas precisa ter seus scripts de entrada reconstruídos e validados antes de ser considerado reproduzível.
+
 ```
-build.bat
+build.bat  # pendente de restauração/validação nesta cópia
 ```
 
 Prepara o `.venv`, instala o PyInstaller (`requirements-build.txt`), empacota
