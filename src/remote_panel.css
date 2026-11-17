@@ -446,3 +446,57 @@ dialog::backdrop { background:rgba(0,0,0,.75); }
   padding:8px 10px; font:14px/1.4 var(--sans);
 }
 .fila-edicao textarea:focus { outline:none; }
+
+/* ---------- UX progressiva: navegação, leitura e acessibilidade ---------- */
+/* Abas com alvos confortáveis no toque e sem depender apenas da cor. */
+nav.tabs .tab {
+  min-height: 44px;
+}
+nav.tabs .tab[aria-selected="true"] {
+  font-weight: 750;
+}
+nav.tabs .tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+/* O indicador de foco deve continuar claro em todos os seis temas. */
+.composer textarea:focus-visible,
+#dlgArquivoTexto:focus-visible,
+#dlgNovo input:focus-visible,
+.fila-edicao textarea:focus-visible,
+#temaLocal:focus-visible,
+#permMode:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Tela ampla: linhas de chat e composição com largura de leitura confortável. */
+@media (min-width: 900px) {
+  .chat {
+    padding-left: clamp(24px, 7vw, 120px);
+    padding-right: clamp(24px, 7vw, 120px);
+  }
+  .msg.assistant { max-width: min(100%, 80ch); }
+  .composer {
+    padding-left: clamp(24px, 7vw, 120px);
+    padding-right: clamp(24px, 7vw, 120px);
+  }
+}
+
+/* Celular: ações do composer podem quebrar linha sem cortar controles. */
+@media (max-width: 550px) {
+  .composer-row:first-child { flex-wrap: wrap; align-items: center; }
+  .composer .ghost { min-height: 44px; }
+  .switch { min-height: 44px; padding-bottom: 0; margin-right: auto; }
+  #btnEnviar { min-height: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -24,6 +24,16 @@ Trocar de janela entre o chat de IA e o editor interrompe o contexto de programa
 
 **Situação:** código-fonte local versionado em 17/11/2026. Na validação de referência, `testes/rodar_tudo.py` teve 764 casos corretos e `pytest testes/ -q` teve 271 testes aprovados. Isso não substitui testes manuais com conta, navegador e instalador reais.
 
+## Experiência de uso: desktop e celular
+
+A interface reúne tarefa, contexto e ações em uma jornada contínua. No painel remoto, as abas **Chat → Projeto → Vault → Mais** organizam a informação por necessidade, sem sobrecarregar a tela pequena.
+
+| Visualização mobile | Visualização desktop |
+| --- | --- |
+| ![Prévia mobile do painel com dados fictícios](docs/screenshots/remote-mobile-demo.png) | ![Prévia desktop do painel com dados fictícios](docs/screenshots/remote-desktop-demo.png) |
+
+*Imagens geradas em prévia isolada com exemplos fictícios; não são provas de uma sessão real do DeepSeek autenticada.* A implementação passou por testes de navegação por teclado, estados acessíveis das abas, largura de 390 px e redução de movimento. Consulte [a análise de UX e as evidências](docs/UX-REMOTE.md).
+
 ## Instalar
 
 Dois cliques em `executar_main.bat`. Na primeira vez ele acha um Python 3.10+

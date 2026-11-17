@@ -22,7 +22,7 @@
 <link rel="manifest" href="/manifest.webmanifest?v=9">
 <link rel="icon" href="/icon-192.png?v=9">
 <link rel="stylesheet" href="/remote_theme.css?v=9">
-<link rel="stylesheet" href="/remote_panel.css?v=8">
+<link rel="stylesheet" href="/remote_panel.css?v=10">
 <title>DeepSeek UI · Remoto</title>
 </head>
 <body>
@@ -34,18 +34,18 @@
     <span class="badge" id="badgeProjeto">—</span>
   </header>
 
-  <nav class="tabs" id="tabs">
-    <button class="tab active" data-tab="chat">Chat</button>
-    <button class="tab" data-tab="projeto">Projeto</button>
-    <button class="tab" data-tab="vault">Vault</button>
-    <button class="tab" data-tab="mais">Mais</button>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="Seções do painel remoto">
+    <button type="button" id="tab-chat" class="tab active" data-tab="chat" role="tab" aria-controls="page-chat" aria-selected="true">Chat</button>
+    <button type="button" id="tab-projeto" class="tab" data-tab="projeto" role="tab" aria-controls="page-projeto" aria-selected="false" tabindex="-1">Projeto</button>
+    <button type="button" id="tab-vault" class="tab" data-tab="vault" role="tab" aria-controls="page-vault" aria-selected="false" tabindex="-1">Vault</button>
+    <button type="button" id="tab-mais" class="tab" data-tab="mais" role="tab" aria-controls="page-mais" aria-selected="false" tabindex="-1">Mais</button>
   </nav>
 </div>
 
 <main>
 
   <!-- ============ Chat ============ -->
-  <section class="page active" id="page-chat">
+  <section class="page active" id="page-chat" role="tabpanel" aria-labelledby="tab-chat">
     <div class="statusbar" id="statusChat"></div>
     <div class="chat-wrap">
       <div class="chat" id="chatArea"></div>
@@ -75,14 +75,14 @@
       </div>
       <div id="barraAnexos" class="anexos-bar" hidden></div>
       <div class="composer-row">
-        <textarea id="entrada" rows="2" placeholder="Escreva para o DeepSeek…"></textarea>
-        <button id="btnEnviar" class="primary">Enviar</button>
+        <textarea id="entrada" rows="2" aria-label="Mensagem ao DeepSeek" placeholder="Escreva para o DeepSeek…"></textarea>
+        <button type="button" id="btnEnviar" class="primary">Enviar</button>
       </div>
     </div>
   </section>
 
   <!-- ============ Projeto ============ -->
-  <section class="page" id="page-projeto">
+  <section class="page" id="page-projeto" role="tabpanel" aria-labelledby="tab-projeto">
     <div class="section-head">
       <h2>Projeto aberto</h2>
       <button class="ghost" id="btnTrocarProjeto">Trocar</button>
@@ -92,7 +92,7 @@
   </section>
 
   <!-- ============ Vault ============ -->
-  <section class="page" id="page-vault">
+  <section class="page" id="page-vault" role="tabpanel" aria-labelledby="tab-vault">
     <div class="section-head">
       <h2>Vault vinculado</h2>
       <button class="ghost" id="btnTrocarVault">Trocar</button>
@@ -102,7 +102,7 @@
   </section>
 
   <!-- ============ Mais ============ -->
-  <section class="page" id="page-mais">
+  <section class="page" id="page-mais" role="tabpanel" aria-labelledby="tab-mais">
     <div class="section-head"><h2>Estado</h2></div>
     <div class="meta" id="estado"></div>
 
@@ -203,8 +203,8 @@
   </div>
 </dialog>
 
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-<script src="/remote_panel.js?v=8"></script>
+<script src="/remote_panel.js?v=10"></script>
 </body>
 </html>

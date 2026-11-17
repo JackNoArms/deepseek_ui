@@ -36,4 +36,4 @@ jobs:
 
       - name: Run deterministic smoke tests
         run: |
-          python -m pytest testes/test_caminhos.py testes/test_push.py testes/test_remote.py testes/test_remote_ui.py testes/test_skills.py -q
+          python -m pytest testes/test_caminhos.py testes/test_push.py testes/test_remote.py testes/test_remote_ui.py testes/test_remote_a11y.py testes/test_skills.py -q
