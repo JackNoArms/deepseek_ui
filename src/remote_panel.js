@@ -26,6 +26,7 @@ let toastTimer = null;
 function toast(msg, erro = false) {
   const el = $('toast');
   el.textContent = msg;
+  el.setAttribute('role', erro ? 'alert' : 'status');
   el.classList.toggle('erro', !!erro);
   el.classList.add('show');
   clearTimeout(toastTimer);
@@ -89,8 +90,12 @@ aplicarTema();
 let abaAtiva = 'chat';
 function ativarAba(nome) {
   abaAtiva = nome;
-  document.querySelectorAll('nav.tabs .tab').forEach(t =>
-    t.classList.toggle('active', t.dataset.tab === nome));
+  document.querySelectorAll('nav.tabs .tab').forEach(t => {
+    const ativa = t.dataset.tab === nome;
+    t.classList.toggle('active', ativa);
+    t.setAttribute('aria-selected', String(ativa));
+    t.tabIndex = ativa ? 0 : -1;
+  });
   document.querySelectorAll('.page').forEach(p =>
     p.classList.toggle('active', p.id === 'page-' + nome));
   if (nome === 'projeto') carregarArvore('projeto');
@@ -98,8 +103,21 @@ function ativarAba(nome) {
   else if (nome === 'chat') carregarChat();
   else if (nome === 'mais') carregarResumoPermissoes();
 }
-document.querySelectorAll('nav.tabs .tab').forEach(t =>
-  t.addEventListener('click', () => ativarAba(t.dataset.tab)));
+const abas = Array.from(document.querySelectorAll('nav.tabs .tab'));
+abas.forEach((t, i) => {
+  t.addEventListener('click', () => ativarAba(t.dataset.tab));
+  t.addEventListener('keydown', (e) => {
+    let destino = i;
+    if (e.key === 'ArrowRight') destino = (i + 1) % abas.length;
+    else if (e.key === 'ArrowLeft') destino = (i - 1 + abas.length) % abas.length;
+    else if (e.key === 'Home') destino = 0;
+    else if (e.key === 'End') destino = abas.length - 1;
+    else return;
+    e.preventDefault();
+    ativarAba(abas[destino].dataset.tab);
+    abas[destino].focus();
+  });
+});
 
 async function atualizarEstado() {
   try {
